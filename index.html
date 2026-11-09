@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asesmen SKI Kelas XI - Semester 1</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+.container { max-width: 900px; margin: 0 auto; }
+.card {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+h1 { color: #2c3e50; margin-bottom: 10px; }
+h2 { color: #34495e; margin: 15px 0; }
+h3 { color: #555; }
+.rules {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+  border-left: 5px solid #667eea;
+}
+.rules ol { padding-left: 25px; }
+.rules li { margin: 10px 0; line-height: 1.6; }
+.form-group { margin: 20px 0; }
+.form-group label { display: block; margin: 10px 0 5px; font-weight: bold; color: #333; }
+.form-group input, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: 0.3s;
+}
+.form-group input:focus, textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  width: 100%;
+  transition: 0.3s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102,126,234,0.4); }
+.btn-secondary {
+  background: #95a5a6;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 5px;
+}
+.btn-danger {
+  background: #e74c3c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 5px;
+}
+.btn-submit {
+  background: #27ae60;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+}
+.header-ujian {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.timer {
+  background: #e74c3c;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 18px;
+}
+.progress-bar {
+  background: #ecf0f1;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.progress-fill {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  height: 100%;
+  width: 0%;
+  transition: 0.3s;
+}
+.soal-box {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 10px;
+  margin: 20px 0;
+  min-height: 200px;
+}
+.soal-box p.pertanyaan {
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+.pilihan label {
+  display: block;
+  background: white;
+  padding: 12px 15px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.pilihan label:hover { border-color: #667eea; background: #f0f3ff; }
+.pilihan input[type="radio"] { margin-right: 10px; }
+.pilihan input[type="radio"]:checked + span { font-weight: bold; color: #667eea; }
+.nav-buttons { display: flex; justify-content: space-between; margin: 15px 0; }
+.grid-nomor {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 5px;
+  margin: 15px 0;
+}
+.grid-nomor button {
+  padding: 8px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.grid-nomor button.terjawab { background: #27ae60; color: white; border-color: #27ae60; }
+.grid-nomor button.aktif { background: #667eea; color: white; border-color: #667eea; }
+.blackout {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: black;
+  color: red;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  text-align: center;
+  padding: 20px;
+}
+.blackout h1 { font-size: 40px; margin-bottom: 20px; }
+.blackout p { font-size: 18px; margin: 10px; color: white; }
+.blackout button {
+  background: red;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.hidden { display: none !important; }
+.small { font-size: 13px; color: #777; margin-top: 15px; text-align: center; }
+.small a { color: #667eea; cursor: pointer; text-decoration: underline; }
+.tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; flex-wrap: wrap; }
+.tab-btn {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  border-bottom: 3px solid transparent;
+}
+.tab-btn.active { border-bottom-color: #667eea; color: #667eea; font-weight: bold; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+table th, table td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+table th { background: #667eea; color: white; }
+table tr:nth-child(even) { background: #f8f9fa; }
+.hasil-box {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  margin: 20px 0;
+}
+.hasil-box h2 { font-size: 60px; margin: 10px 0; }
+.menu-utama {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.menu-utama button {
+  padding: 12px 25px;
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+.menu-utama button:hover { background: #667eea; color: white; }
+</style>
+</head>
+<body>
+
+<!-- LAYAR BLACKOUT (ANTI-CHEAT) -->
+<div id="blackout" class="blackout hidden">
+  <h1>⚠️ PELANGGARAN TERDETEKSI!</h1>
+  <p>Anda terdeteksi menyalin soal, screenshot, pindah tab, atau membelah layar.</p>
+  <p>Ujian akan diulang dari awal dan soal diacak kembali.</p>
+  <button onclick="resetUjian()">🔄 Mulai Ujian Ulang</button>
+</div>
+
+<!-- =================== HALAMAN PORTAL =================== -->
+<div id="portal" class="container">
+  <div class="card">
+    <h1>📖 ASESMEN SEJARAH KEBUDAYAAN ISLAM</h1>
+    <h3>Kelas XI - Semester 1</h3>
+    <div class="rules">
+      <h2>📜 10 PERATURAN UJIAN</h2>
+      <ol>
+        <li>Isi <b>Nama, Kelas, dan Nomor Ujian</b> dengan benar sebelum memulai.</li>
+        <li>Ujian terdiri dari <b>50 soal pilihan ganda</b> (A, B, C, D, E).</li>
+        <li>Waktu pengerjaan <b>90 menit</b> sejak ujian dimulai.</li>
+        <li>Jawaban <b>hanya dapat di-submit SATU KALI</b> dan akan terkunci permanen.</li>
+        <li><b>DILARANG</b> menyalin (copy) soal ke clipboard.</li>
+        <li><b>DILARANG</b> melakukan tangkap layar (screenshot / print screen).</li>
+        <li><b>DILARANG</b> pindah tab, minimize, atau membuka aplikasi lain.</li>
+        <li><b>DILARANG</b> menggunakan mode belah layar (split screen).</li>
+        <li>Pelanggaran akan menyebabkan <b>layar menjadi hitam</b> dan soal <b>diacak ulang dari awal</b>.</li>
+        <li>Kerjakan dengan jujur, berdoa sebelum memulai. <b>Selamat mengerjakan!</b></li>
+      </ol>
+    </div>
+    <div class="form-group">
+      <label>Nama Lengkap:</label>
+      <input type="text" id="nama" placeholder="Masukkan nama lengkap">
+      <label>Kelas:</label>
+      <input type="text" id="kelas" placeholder="Contoh: XI IPA 1">
+      <label>Nomor Ujian:</label>
+      <input type="text" id="noUjian" placeholder="Masukkan nomor ujian">
+    </div>
+    <button class="btn-primary" onclick="mulaiUjian()">🚀 MULAI UJIAN</button>
+    <div class="menu-utama">
+      <button onclick="tampilkan('loginGuru'); sembunyikan('portal')">🔐 Login Guru</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== HALAMAN UJIAN =================== -->
+<div id="ujian" class="container hidden">
+  <div class="card">
+    <div class="header-ujian">
+      <div>
+        <h2 id="infoSiswa"></h2>
+        <p>Soal <span id="nomorSoal">1</span> dari 50</p>
+      </div>
+      <div class="timer" id="timer">⏱️ 90:00</div>
+    </div>
+    <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+    <div id="soalContainer" class="soal-box"></div>
+    <div class="nav-buttons">
+      <button class="btn-secondary" onclick="prevSoal()">◀ Sebelumnya</button>
+      <button class="btn-primary" style="width:auto" onclick="nextSoal()">Selanjutnya ▶</button>
+    </div>
+    <div class="grid-nomor" id="gridNomor"></div>
+    <button class="btn-submit" onclick="submitUjian()">✅ SUBMIT JAWABAN (TERKUNCI)</button>
+  </div>
+</div>
+
+<!-- =================== HALAMAN HASIL =================== -->
+<div id="hasil" class="container hidden">
+  <div class="card">
+    <h1>🎉 UJIAN SELESAI</h1>
+    <div id="hasilContent"></div>
+    <button class="btn-primary" onclick="location.reload()">🔄 Kembali ke Portal</button>
+  </div>
+</div>
+
+<!-- =================== HALAMAN LOGIN GURU =================== -->
+<div id="loginGuru" class="container hidden">
+  <div class="card">
+    <h1>🔐 DASHBOARD GURU</h1>
+    <p>Masukkan ID Guru untuk melanjutkan</p>
+    <div class="form-group">
+      <input type="password" id="idGuru" placeholder="ID Guru">
+    </div>
+    <button class="btn-primary" onclick="loginGuru()">LOGIN</button>
+    <div class="menu-utama">
+      <button onclick="tampilkan('portal'); sembunyikan('loginGuru')">← Kembali ke Portal Siswa</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== HALAMAN DASHBOARD GURU =================== -->
+<div id="dashboard" class="container hidden">
+  <div class="card">
+    <h1>📊 DASHBOARD GURU</h1>
+    <div class="tabs">
+      <button onclick="showTab('upload', this)" class="tab-btn active">📤 Upload Soal</button>
+      <button onclick="showTab('hasilSiswa', this)" class="tab-btn">📋 Hasil Siswa</button>
+      <button onclick="showTab('kelolaSoal', this)" class="tab-btn">📚 Kelola Soal</button>
+    </div>
+
+    <!-- TAB UPLOAD -->
+    <div id="tab-upload" class="tab-content">
+      <h3>Upload Soal Custom (Format JSON)</h3>
+      <p class="small" style="text-align:left">Format: {"pertanyaan":"...","pilihan":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"kunci":"A"}</p>
+      <textarea id="inputSoal" rows="10" placeholder='[
+  {
+    "pertanyaan": "Contoh soal...",
+    "pilihan": {"A":"...","B":"...","C":"...","D":"...","E":"..."},
+    "kunci": "A"
+  }
+]'></textarea>
+      <button class="btn-primary" onclick="uploadSoal()">💾 Upload Soal</button>
+      <h3 style="margin-top:20px">Atau Upload File JSON</h3>
+      <input type="file" id="fileSoal" accept=".json">
+      <button class="btn-secondary" onclick="uploadFile()">📂 Upload File</button>
+    </div>
+
+    <!-- TAB HASIL SISWA -->
+    <div id="tab-hasilSiswa" class="tab-content hidden">
+      <h3>Hasil Ujian Siswa</h3>
+      <div style="overflow-x:auto">
+      <table id="tabelHasil">
+        <thead>
+          <tr><th>No</th><th>Nama</th><th>Kelas</th><th>No Ujian</th><th>Benar</th><th>Nilai</th><th>Waktu</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      </div>
+      <button class="btn-secondary" onclick="exportCSV()">📥 Export CSV</button>
+      <button class="btn-danger" onclick="hapusSemuaHasil()">🗑️ Hapus Semua</button>
+    </div>
+
+    <!-- TAB KELOLA SOAL -->
+    <div id="tab-kelolaSoal" class="tab-content hidden">
+      <h3>Daftar Soal Aktif (<span id="jumlahSoal">0</span> soal)</h3>
+      <div id="daftarSoal" style="max-height:400px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;padding:10px;margin-top:10px"></div>
+      <button class="btn-danger" onclick="resetSoalDefault()" style="margin-top:15px">🔄 Reset ke Soal Default</button>
+    </div>
+
+    <button class="btn-secondary" onclick="logoutGuru()" style="margin-top:20px;width:100%">🚪 Logout</button>
+  </div>
+</div>
+
+<script>
+// ============ 50 SOAL SKI KELAS XI SEMESTER 1 ============
+const SOAL_DEFAULT = [
+  {pertanyaan:"Periode sejarah peradaban Islam yang dikenal dengan masa kejayaan, di mana ilmu pengetahuan, filsafat, dan kebudayaan berkembang pesat, disebut dengan masa...",pilihan:{A:"Masa Nabi Muhammad SAW",B:"Masa Khulafaur Rasyidin",C:"Masa Klasik (Dinasti Umayyah & Abbasiyah)",D:"Masa Modern",E:"Masa Kontemporer"},kunci:"C"},
+  {pertanyaan:"Dinasti Umayyah yang berpusat di Damaskus didirikan oleh Muawiyah bin Abu Sufyan pada tahun 661 M. Salah satu kebijakan penting Muawiyah yang menjadi titik awal perubahan sistem pemerintahan Islam adalah...",pilihan:{A:"Menerapkan sistem syura (musyawarah) dalam pemilihan khalifah",B:"Mengubah sistem khilafah menjadi monarki herediter (turun-temurun)",C:"Memindahkan ibu kota dari Damaskus ke Baghdad",D:"Menghapuskan sistem pajak dan menggantinya dengan zakat",E:"Membentuk dewan menteri (wazir) sebagai penasehat"},kunci:"B"},
+  {pertanyaan:"Pada masa pemerintahan Khalifah Al-Walid I (705-715 M), ekspansi wilayah Islam mencapai puncak kejayaannya. Wilayah yang berhasil ditaklukkan pada masanya meliputi...",pilihan:{A:"Persia, Mesir, dan Syam",B:"Spanyol (Andalusia), Afrika Utara, dan Transoxiana",C:"India, Cina, dan Asia Tenggara",D:"Turki, Rusia, dan Eropa Timur",E:"Yaman, Habasyah, dan Sudan"},kunci:"B"},
+  {pertanyaan:"Tokoh militer Islam yang memimpin pasukan menyeberangi Selat Gibraltar dan berhasil menaklukkan Kerajaan Visigoth di Spanyol pada tahun 711 M adalah...",pilihan:{A:"Thariq bin Ziyad",B:"Musa bin Nushair",C:"Abdurrahman Al-Ghafiqi",D:"Abdullah bin Sa'ad",E:"Uqbah bin Nafi'"},kunci:"A"},
+  {pertanyaan:"Salah satu kontribusi besar Dinasti Umayyah dalam bidang arsitektur Islam adalah pembangunan masjid megah di Damaskus yang dikenal dengan nama...",pilihan:{A:"Masjid Nabawi",B:"Masjid Quba",C:"Masjid Umayyah (Great Mosque of Damascus)",D:"Masjid Cordoba",E:"Masjid Al-Azhar"},kunci:"C"},
+  {pertanyaan:"Revolusi Abbasiyah yang menggulingkan Dinasti Umayyah pada tahun 750 M didukung kuat oleh kelompok yang berasal dari wilayah timur (Khurasan), yaitu...",pilihan:{A:"Kaum Quraisy Makkah",B:"Kaum Anshar Madinah",C:"Kaum Mawali (non-Arab yang masuk Islam)",D:"Kaum Khawarij",E:"Kaum Syi'ah Zaidiyah"},kunci:"C"},
+  {pertanyaan:"Khalifah pertama Dinasti Abbasiyah yang meletakkan dasar-dasar pemerintahan dan memindahkan pusat pemerintahan dari Damaskus ke Irak adalah...",pilihan:{A:"Al-Mansur",B:"Abu Al-Abbas As-Saffah",C:"Harun Ar-Rasyid",D:"Al-Ma'mun",E:"Al-Mu'tashim"},kunci:"B"},
+  {pertanyaan:"Kota Baghdad didirikan oleh Khalifah Al-Mansur pada tahun 762 M dengan bentuk arsitektur yang khas, yaitu...",pilihan:{A:"Bentuk persegi empat seperti kota Romawi",B:"Bentuk bundar (Round City) dengan istana khalifah di tengah",C:"Bentuk bintang seperti benteng militer",D:"Bentuk segitiga dengan tiga gerbang utama",E:"Bentuk oval mengikuti aliran sungai Tigris"},kunci:"B"},
+  {pertanyaan:"Masa pemerintahan Khalifah Harun Ar-Rasyid (786-809 M) dan putranya Al-Ma'mun (813-833 M) dikenal sebagai masa keemasan Abbasiyah karena...",pilihan:{A:"Berhasil menaklukkan seluruh wilayah Eropa",B:"Mencapai puncak kejayaan ekonomi, politik, dan kebudayaan (Baitul Hikmah)",C:"Menerapkan sistem demokrasi pertama di dunia Islam",D:"Menghapuskan seluruh perbedaan mazhab dalam Islam",E:"Memindahkan ibu kota ke Cordoba, Spanyol"},kunci:"B"},
+  {pertanyaan:"Baitul Hikmah yang didirikan di Baghdad pada masa Dinasti Abbasiyah berfungsi sebagai...",pilihan:{A:"Istana khalifah untuk menerima tamu negara",B:"Perpustakaan, pusat penerjemahan, dan lembaga penelitian ilmiah",C:"Markas militer untuk melatih pasukan",D:"Pasar terbesar di dunia Islam",E:"Masjid utama untuk ibadah nasional"},kunci:"B"},
+  {pertanyaan:"Tokoh filsuf Muslim yang dijuluki 'Guru Pertama' (Al-Mu'allim Al-Awwal) karena jasanya menerjemahkan dan mengulas karya-karya Aristoteles adalah...",pilihan:{A:"Al-Kindi",B:"Al-Farabi",C:"Ibnu Sina",D:"Ibnu Rusyd",E:"Al-Ghazali"},kunci:"B"},
+  {pertanyaan:"Kitab 'Al-Qanun fi At-Tibb' (The Canon of Medicine) yang menjadi rujukan utama ilmu kedokteran di Eropa selama berabad-abad ditulis oleh...",pilihan:{A:"Ar-Razi (Rhazes)",B:"Ibnu Sina (Avicenna)",C:"Ibnu Rusyd (Averroes)",D:"Al-Zahrawi (Abulcasis)",E:"Ibnu Nafis"},kunci:"B"},
+  {pertanyaan:"Tokoh Muslim yang dikenal sebagai bapak optik modern dan menulis kitab 'Kitab Al-Manazir' (Book of Optics) yang mempengaruhi ilmuwan Eropa seperti Roger Bacon adalah...",pilihan:{A:"Al-Khawarizmi",B:"Ibnu Al-Haitsam",C:"Al-Biruni",D:"Jabir bin Hayyan",E:"Al-Idrisi"},kunci:"B"},
+  {pertanyaan:"Ilmuwan Muslim yang mengembangkan konsep aljabar dan menulis kitab 'Al-Kitab Al-Mukhtasar fi Hisab Al-Jabr wal Muqabala' adalah...",pilihan:{A:"Al-Biruni",B:"Al-Khawarizmi",C:"Umar Khayyam",D:"Nasiruddin At-Tusi",E:"Al-Battani"},kunci:"B"},
+  {pertanyaan:"Dinasti Fatimiyah yang bercorak Syi'ah Ismailiyah mendirikan pusat kekuasaan di Mesir dan membangun kota Kairo serta universitas tertua yang masih beroperasi, yaitu...",pilihan:{A:"Universitas Al-Azhar",B:"Universitas Zaitunah",C:"Universitas Qarawiyyin",D:"Universitas Nizamiyah",E:"Universitas Mustanshiriyah"},kunci:"A"},
+  {pertanyaan:"Universitas Nizamiyah di Baghdad yang didirikan oleh Wazir Nizamul Muluk pada masa Dinasti Abbasiyah memiliki peran penting sebagai...",pilihan:{A:"Pusat perdagangan internasional",B:"Lembaga pendidikan tinggi formal pertama di dunia Islam (madrasah)",C:"Benteng pertahanan militer",D:"Pusat pemerintahan regional",E:"Pasar buku terbesar di dunia"},kunci:"B"},
+  {pertanyaan:"Peradaban Islam di Andalusia (Spanyol) mencapai puncak kejayaan pada masa Khalifah Abdurrahman III (912-961 M) yang menyatakan dirinya sebagai khalifah. Ibu kota Andalusia pada masa itu adalah...",pilihan:{A:"Madrid",B:"Barcelona",C:"Cordoba",D:"Granada",E:"Seville"},kunci:"C"},
+  {pertanyaan:"Salah satu peninggalan arsitektur Islam paling terkenal di Andalusia yang menjadi simbol keindahan peradaban Islam di Spanyol adalah...",pilihan:{A:"Masjid Cordoba dan Istana Alhambra",B:"Masjid Blue di Istanbul",C:"Taj Mahal di India",D:"Masjid Nabawi di Madinah",E:"Kubah Batu di Yerusalem"},kunci:"A"},
+  {pertanyaan:"Tokoh filsuf Andalusia yang dikenal di Eropa dengan nama Averroes dan memiliki pengaruh besar terhadap pemikiran Thomas Aquinas adalah...",pilihan:{A:"Ibnu Bajjah",B:"Ibnu Thufail",C:"Ibnu Rusyd",D:"Ibnu Arabi",E:"Lisanuddin bin Al-Khatib"},kunci:"C"},
+  {pertanyaan:"Novel filsafat karya Ibnu Thufail yang bercerita tentang seorang anak yang tumbuh sendirian di pulau terpencil dan menemukan kebenaran melalui akal disebut...",pilihan:{A:"Al-Madinah Al-Fadhilah",B:"Hayy bin Yaqzan",C:"Tahafut Al-Falasifah",D:"Tahafut At-Tahafut",E:"Fushul Al-Maqalat"},kunci:"B"},
+  {pertanyaan:"Kemunduran Dinasti Abbasiyah ditandai dengan peristiwa besar pada tahun 1258 M, yaitu...",pilihan:{A:"Perang Salib pertama",B:"Jatuhnya Baghdad ke tangan bangsa Mongol di bawah Hulagu Khan",C:"Berdirinya Dinasti Utsmani",D:"Penaklukan Konstantinopel oleh Muhammad Al-Fatih",E:"Kekalahan di Perang Hattin"},kunci:"B"},
+  {pertanyaan:"Sistem pemerintahan Dinasti Umayyah di Andalusia berbeda dengan Abbasiyah karena...",pilihan:{A:"Menggunakan sistem republik",B:"Merupakan kelanjutan Umayyah Damaskus yang lolos dari pembantaian Abbasiyah",C:"Dipimpin oleh seorang sultan tanpa gelar khalifah",D:"Menganut paham Syi'ah secara resmi",E:"Tidak memiliki angkatan perang"},kunci:"B"},
+  {pertanyaan:"Tokoh yang berhasil mendirikan Dinasti Umayyah II di Andalusia setelah melarikan diri dari kejaran Bani Abbasiyah adalah...",pilihan:{A:"Abdurrahman Ad-Dakhil (The Immigrant)",B:"Al-Hakam II",C:"Al-Mansur bin Abi Amir",D:"Hisyam III",E:"Muhammad I"},kunci:"A"},
+  {pertanyaan:"Salah satu faktor utama keberhasilan peradaban Islam dalam mengembangkan ilmu pengetahuan adalah...",pilihan:{A:"Larangan menerjemahkan buku-buku asing",B:"Gerakan penerjemahan besar-besaran karya Yunani, Persia, dan India",C:"Penolakan terhadap ilmu-ilmu rasional",D:"Pemusatan ilmu hanya pada bidang agama",E:"Larangan belajar dari non-Muslim"},kunci:"B"},
+  {pertanyaan:"Ilmuwan Muslim yang dikenal sebagai bapak alkimia (chemistry) dan menemukan berbagai proses kimia seperti distilasi dan kristalisasi adalah...",pilihan:{A:"Ar-Razi",B:"Jabir bin Hayyan",C:"Al-Biruni",D:"Ibnu Sina",E:"Al-Kindi"},kunci:"B"},
+  {pertanyaan:"Kontribusi Al-Biruni dalam bidang geografi dan astronomi antara lain...",pilihan:{A:"Menemukan teori heliosentris",B:"Menghitung keliling bumi dengan akurasi tinggi dan menulis kitab tentang India",C:"Membuat peta dunia modern pertama",D:"Menemukan benua Amerika",E:"Menciptakan teleskop pertama"},kunci:"B"},
+  {pertanyaan:"Angka '0' (nol) dan sistem desimal yang digunakan di seluruh dunia saat ini dikembangkan oleh ilmuwan Muslim berdasarkan sistem dari...",pilihan:{A:"Yunani kuno",B:"Romawi kuno",C:"India (Hindu)",D:"Cina kuno",E:"Mesir kuno"},kunci:"C"},
+  {pertanyaan:"Istilah 'algoritma' dalam matematika modern berasal dari nama ilmuwan Muslim...",pilihan:{A:"Al-Khawarizmi",B:"Al-Biruni",C:"Ibnu Sina",D:"Al-Farabi",E:"Al-Kindi"},kunci:"A"},
+  {pertanyaan:"Salah satu bentuk akulturasi kebudayaan Islam dengan kebudayaan lokal di Andalusia terlihat dalam...",pilihan:{A:"Penggunaan bahasa Latin sebagai bahasa resmi",B:"Perkembangan puisi, musik, dan arsitektur yang memadukan unsur Arab, Spanyol, dan Yahudi",C:"Pelarangan seluruh budaya non-Arab",D:"Penghapusan bahasa Arab dari kehidupan sehari-hari",E:"Penolakan terhadap filsafat Yunani"},kunci:"B"},
+  {pertanyaan:"Dinasti-dinasti kecil yang muncul di Andalusia setelah runtuhnya Kekhalifahan Cordoba pada tahun 1031 M dikenal dengan sebutan...",pilihan:{A:"Muluk Ath-Thawaif (Raja-raja Kelompok)",B:"Khulafaur Rasyidin",C:"Sultanate Mamluk",D:"Bani Umayyah",E:"Almoravid"},kunci:"A"},
+  {pertanyaan:"Kehancuran peradaban Islam di Andalusia secara final ditandai dengan...",pilihan:{A:"Perang Salib keempat",B:"Jatuhnya Granada ke tangan Ferdinand dan Isabella pada tahun 1492 M",C:"Invasi bangsa Viking",D:"Gempa bumi besar di Cordoba",E:"Wabah penyakit hitam"},kunci:"B"},
+  {pertanyaan:"Setelah jatuhnya Granada, umat Islam di Spanyol mengalami perlakuan keras berupa...",pilihan:{A:"Diberikan otonomi penuh",B:"Dipaksa masuk Kristen atau diusir (Inquisisi Spanyol)",C:"Dijadikan bangsawan",D:"Diberikan hak politik setara",E:"Dibiarkan menjalankan agama dengan bebas"},kunci:"B"},
+  {pertanyaan:"Salah satu warisan peradaban Islam di Andalusia yang masih dapat disaksikan hingga saat ini dan menjadi objek wisata dunia adalah...",pilihan:{A:"Istana Versailles",B:"Istana Alhambra di Granada",C:"Menara Eiffel",D:"Colosseum Roma",E:"Parthenon Athena"},kunci:"B"},
+  {pertanyaan:"Pengaruh peradaban Islam di Eropa pada Abad Pertengahan terlihat dalam...",pilihan:{A:"Tidak ada pengaruh sama sekali",B:"Transfer ilmu pengetahuan melalui terjemahan di Toledo dan Sicilia yang memicu Renaisans Eropa",C:"Eropa menolak seluruh ilmu dari Islam",D:"Islam menggantikan Kristen di Eropa",E:"Eropa hanya menerima ilmu militer"},kunci:"B"},
+  {pertanyaan:"Kota Toledo di Spanyol menjadi pusat penting pada abad ke-12 karena...",pilihan:{A:"Menjadi pusat perdagangan rempah-rempah",B:"Pusat penerjemahan karya Arab ke Latin oleh Gerard of Cremona dan lainnya",C:"Ibu kota pertama Spanyol Kristen",D:"Tempat penobatan raja-raja Spanyol",E:"Pusat produksi senjata"},kunci:"B"},
+  {pertanyaan:"Salah satu nilai utama yang dapat dipetik dari sejarah peradaban Islam masa klasik adalah...",pilihan:{A:"Pentingnya kekuatan militer semata",B:"Pentingnya ilmu pengetahuan, toleransi, dan akulturasi budaya",C:"Pentingnya isolasi dari peradaban lain",D:"Pentingnya kekayaan materi",E:"Pentingnya fanatisme golongan"},kunci:"B"},
+  {pertanyaan:"Munculnya gerakan Mu'tazilah yang menekankan penggunaan akal dalam memahami agama terjadi pada masa...",pilihan:{A:"Khulafaur Rasyidin",B:"Dinasti Umayyah Damaskus",C:"Dinasti Abbasiyah awal (Khalifah Al-Ma'mun)",D:"Dinasti Umayyah Andalusia",E:"Dinasti Fatimiyah"},kunci:"C"},
+  {pertanyaan:"Tokoh teolog Asy'ariyah yang menentang Mu'tazilah dan menjadi rujukan utama teologi Sunni adalah...",pilihan:{A:"Abu Hasan Al-Asy'ari",B:"Abu Mansur Al-Maturidi",C:"Ahmad bin Hanbal",D:"Al-Ghazali",E:"Ibnu Taimiyah"},kunci:"A"},
+  {pertanyaan:"Kitab 'Ihya Ulumuddin' karya Imam Al-Ghazali merupakan karya monumental yang membahas tentang...",pilihan:{A:"Ilmu mantiq (logika) saja",B:"Integrasi antara ilmu syariat dan hakikat (tasawuf)",C:"Sejarah peperangan Islam",D:"Hukum waris Islam",E:"Tafsir Al-Qur'an saja"},kunci:"B"},
+  {pertanyaan:"Al-Ghazali dalam kitabnya 'Tahafut Al-Falasifah' mengkritik pandangan para filsuf yang menurutnya bertentangan dengan akidah Islam. Tokoh filsuf yang menjadi sasaran kritik utamanya adalah...",pilihan:{A:"Al-Kindi dan Al-Farabi",B:"Ibnu Sina dan Al-Farabi",C:"Ibnu Rusyd dan Ibnu Bajjah",D:"Ar-Razi dan Al-Biruni",E:"Al-Khawarizmi dan Jabir"},kunci:"B"},
+  {pertanyaan:"Ibnu Rusyd menulis kitab 'Tahafut At-Tahafut' sebagai jawaban atas kritik Al-Ghazali. Pendekatan Ibnu Rusyd dalam mempertemukan akal dan wahyu dikenal dengan prinsip...",pilihan:{A:"Pemisahan total antara agama dan filsafat",B:"Kebenaran wahyu dan kebenaran akal tidak mungkin bertentangan",C:"Akal lebih tinggi dari wahyu",D:"Wahyu harus ditolak jika bertentangan dengan logika",E:"Filsafat dilarang dalam Islam"},kunci:"B"},
+  {pertanyaan:"Perkembangan ilmu fikih pada masa Dinasti Abbasiyah ditandai dengan munculnya empat mazhab Sunni utama, yaitu...",pilihan:{A:"Hanafi, Maliki, Syafi'i, Hambali",B:"Ja'fari, Zaidi, Ismaili, Ibadi",C:"Mu'tazilah, Asy'ariyah, Maturidiyah, Syi'ah",D:"Qadariyah, Jabariyah, Murji'ah, Khawarij",E:"Hanafi, Syafi'i, Ja'fari, Maliki"},kunci:"A"},
+  {pertanyaan:"Imam Syafi'i dikenal sebagai peletak dasar ushul fikih sistematis melalui karyanya yang berjudul...",pilihan:{A:"Al-Muwattha",B:"Al-Fiqh Al-Akbar",C:"Ar-Risalah",D:"Bidayatul Mujtahid",E:"Al-Mabsuth"},kunci:"C"},
+  {pertanyaan:"Ilmu hadis mengalami kodifikasi resmi pada masa Dinasti Abbasiyah. Kitab hadis yang dianggap paling shahih setelah Al-Qur'an adalah...",pilihan:{A:"Shahih Muslim",B:"Shahih Bukhari",C:"Sunan Abu Daud",D:"Sunan Tirmidzi",E:"Musnad Ahmad"},kunci:"B"},
+  {pertanyaan:"Perkembangan ilmu tafsir pada masa klasik ditandai dengan munculnya dua metode utama, yaitu...",pilihan:{A:"Tafsir bil Ma'tsur dan Tafsir bir Ra'yi",B:"Tafsir sufi dan tafsir filosofis",C:"Tafsir ilmiah dan tafsir sastra",D:"Tafsir syi'ah dan tafsir sunni",E:"Tafsir literal dan tafsir simbolik"},kunci:"A"},
+  {pertanyaan:"Salah satu faktor yang menyebabkan kemunduran ilmu pengetahuan di dunia Islam setelah masa keemasan adalah...",pilihan:{A:"Terlalu banyak ilmuwan yang lahir",B:"Invasi Mongol, Perang Salib, dan tertutupnya pintu ijtihad",C:"Kelebihan dana untuk penelitian",D:"Kerjasama yang terlalu erat dengan Eropa",E:"Terlalu banyak perpustakaan"},kunci:"B"},
+  {pertanyaan:"Sistem waqaf dalam peradaban Islam memiliki peran penting dalam...",pilihan:{A:"Membiayai perang saja",B:"Mendukung pendidikan, rumah sakit, dan fasilitas umum secara berkelanjutan",C:"Mengumpulkan kekayaan pribadi penguasa",D:"Membayar gaji tentara",E:"Membangun istana khalifah"},kunci:"B"},
+  {pertanyaan:"Jaringan perdagangan dunia Islam pada masa klasik menghubungkan wilayah...",pilihan:{A:"Hanya Timur Tengah",B:"Dari Spanyol (Andalusia) hingga ke Cina dan Asia Tenggara",C:"Hanya Afrika Utara",D:"Hanya Asia Tengah",E:"Hanya Eropa Timur"},kunci:"B"},
+  {pertanyaan:"Dinar dan Dirham yang digunakan sebagai mata uang pada masa klasik Islam terbuat dari...",pilihan:{A:"Kertas dan tembaga",B:"Emas (Dinar) dan Perak (Dirham)",C:"Perunggu dan besi",D:"Kulit hewan",E:"Batuan mulia"},kunci:"B"},
+  {pertanyaan:"Pelajaran paling berharga dari sejarah peradaban Islam masa klasik bagi generasi Muslim saat ini adalah...",pilihan:{A:"Meniru seluruh budaya asing tanpa seleksi",B:"Menjunjung tinggi ilmu pengetahuan, menjaga toleransi, dan berpegang pada nilai Islam sambil terbuka terhadap kemajuan",C:"Menutup diri dari peradaban lain",D:"Menganggap masa lalu sebagai satu-satunya kejayaan",E:"Menolak teknologi modern"},kunci:"B"}
+];
+
+// ============ VARIABEL GLOBAL ============
+let soalAktif = [];
+let jawabanSiswa = {};
+let indexSoal = 0;
+let timerInterval, waktuSisa = 90*60;
+let dataSiswa = {};
+let pelanggaran = 0;
+let ujianDimulai = false;
+let ujianSelesai = false;
+
+// ============ FUNGSI NAVIGASI ============
+function tampilkan(id) { document.getElementById(id).classList.remove('hidden'); }
+function sembunyikan(id) { document.getElementById(id).classList.add('hidden'); }
+
+// ============ INISIALISASI ============
+window.onload = function() {
+  const soalCustom = JSON.parse(localStorage.getItem('soalCustom') || 'null');
+  soalAktif = soalCustom && soalCustom.length >= 10 ? soalCustom : SOAL_DEFAULT;
+  cekStatusGuru();
+};
+
+// ============ FUNGSI SISWA ============
+function mulaiUjian() {
+  const nama = document.getElementById('nama').value.trim();
+  const kelas = document.getElementById('kelas').value.trim();
+  const noUjian = document.getElementById('noUjian').value.trim();
+  
+  if (!nama || !kelas || !noUjian) {
+    alert('⚠️ Harap isi Nama, Kelas, dan Nomor Ujian!');
+    return;
+  }
+  if (!confirm('Apakah Anda sudah siap mengerjakan ujian? Jawaban hanya bisa disubmit 1x dan terkunci.')) return;
+  
+  dataSiswa = { nama, kelas, noUjian };
+  document.getElementById('infoSiswa').textContent = `${nama} | ${kelas} | No: ${noUjian}`;
+  
+  soalAktif = acakArray([...soalAktif]);
+  jawabanSiswa = {};
+  indexSoal = 0;
+  
+  sembunyikan('portal');
+  tampilkan('ujian');
+  
+  aktifkanKeamanan();
+  try { document.documentElement.requestFullscreen(); } catch(e) {}
+  
+  buatGridNomor();
+  tampilkanSoal();
+  mulaiTimer();
+  ujianDimulai = true;
+}
+
+function acakArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function buatGridNomor() {
+  const grid = document.getElementById('gridNomor');
+  grid.innerHTML = '';
+  soalAktif.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { indexSoal = i; tampilkanSoal(); };
+    grid.appendChild(btn);
+  });
+  updateGridNomor();
+}
+
+function updateGridNomor() {
+  const btns = document.querySelectorAll('#gridNomor button');
+  btns.forEach((btn, i) => {
+    btn.className = '';
+    if (jawabanSiswa[i] !== undefined) btn.classList.add('terjawab');
+    if (i === indexSoal) btn.classList.add('aktif');
+  });
+}
+
+function tampilkanSoal() {
+  const soal = soalAktif[indexSoal];
+  const container = document.getElementById('soalContainer');
+  let html = `<p class="pertanyaan"><b>${indexSoal + 1}.</b> ${soal.pertanyaan}</p><div class="pilihan">`;
+  ['A','B','C','D','E'].forEach(huruf => {
+    const checked = jawabanSiswa[indexSoal] === huruf ? 'checked' : '';
+    html += `<label><input type="radio" name="jwb" value="${huruf}" ${checked} onchange="pilihJawaban('${huruf}')"><span>${huruf}. ${soal.pilihan[huruf]}</span></label>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+  document.getElementById('nomorSoal').textContent = indexSoal + 1;
+  document.getElementById('progress').style.width = ((indexSoal + 1) / soalAktif.length * 100) + '%';
+  updateGridNomor();
+}
+
+function pilihJawaban(huruf) {
+  jawabanSiswa[indexSoal] = huruf;
+  updateGridNomor();
+}
+
+function nextSoal() {
+  if (indexSoal < soalAktif.length - 1) { indexSoal++; tampilkanSoal(); }
+}
+function prevSoal() {
+  if (indexSoal > 0) { indexSoal--; tampilkanSoal(); }
+}
+
+function mulaiTimer() {
+  waktuSisa = 90 * 60;
+  timerInterval = setInterval(() => {
+    waktuSisa--;
+    const m = Math.floor(waktuSisa / 60);
+    const s = waktuSisa % 60;
+    document.getElementById('timer').textContent = `⏱️ ${m}:${s.toString().padStart(2,'0')}`;
+    if (waktuSisa <= 0) { clearInterval(timerInterval); submitUjian(true); }
+  }, 1000);
+}
+
+function submitUjian(autoSubmit = false) {
+  if (ujianSelesai) return;
+  if (!autoSubmit) {
+    const terjawab = Object.keys(jawabanSiswa).length;
+    if (!confirm(`Anda baru menjawab ${terjawab} dari ${soalAktif.length} soal. Yakin submit? Jawaban akan TERKUNCI.`)) return;
+  }
+  ujianSelesai = true;
+  clearInterval(timerInterval);
+  nonaktifkanKeamanan();
+  
+  let benar = 0;
+  soalAktif.forEach((soal, i) => {
+    if (jawabanSiswa[i] === soal.kunci) benar++;
+  });
+  const nilai = Math.round((benar / soalAktif.length) * 100);
+  
+  const hasil = JSON.parse(localStorage.getItem('hasilUjian') || '[]');
+  hasil.push({
+    ...dataSiswa,
+    benar, total: soalAktif.length, nilai,
+    waktu: new Date().toLocaleString('id-ID'),
+    pelanggaran
+  });
+  localStorage.setItem('hasilUjian', JSON.stringify(hasil));
+  
+  sembunyikan('ujian');
+  tampilkan('hasil');
+  document.getElementById('hasilContent').innerHTML = `
+    <div class="hasil-box">
+      <p>Nama: <b>${dataSiswa.nama}</b></p>
+      <p>Kelas: <b>${dataSiswa.kelas}</b> | No Ujian: <b>${dataSiswa.noUjian}</b></p>
+      <h2>${nilai}</h2>
+      <p>Jawaban Benar: ${benar} / ${soalAktif.length}</p>
+      <p>Pelanggaran: ${pelanggaran}x</p>
+    </div>
+  `;
+}
+
+// ============ SISTEM KEAMANAN ANTI-CHEAT ============
+function aktifkanKeamanan() {
+  document.addEventListener('contextmenu', blokir);
+  document.addEventListener('keydown', cekShortcut);
+  document.addEventListener('visibilitychange', cekVisibility);
+  window.addEventListener('blur', cekBlur);
+  window.addEventListener('resize', cekResize);
+  document.addEventListener('keyup', cekPrintScreen);
+  document.addEventListener('fullscreenchange', cekFullscreen);
+}
+
+function nonaktifkanKeamanan() {
+  document.removeEventListener('contextmenu', blokir);
+  document.removeEventListener('keydown', cekShortcut);
+  document.removeEventListener('visibilitychange', cekVisibility);
+  window.removeEventListener('blur', cekBlur);
+  window.removeEventListener('resize', cekResize);
+  document.removeEventListener('keyup', cekPrintScreen);
+  document.removeEventListener('fullscreenchange', cekFullscreen);
+}
+
+function blokir(e) { e.preventDefault(); return false; }
+
+function cekShortcut(e) {
+  if (e.ctrlKey && ['c','v','x','p','s','u','a'].includes(e.key.toLowerCase())) {
+    e.preventDefault();
+    catatPelanggaran('Mencoba copy/paste');
+    return false;
+  }
+  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase()))) {
+    e.preventDefault();
+    catatPelanggaran('Mencoba buka DevTools');
+    return false;
+  }
+  if (e.key === 'PrintScreen') {
+    navigator.clipboard.writeText('').catch(()=>{});
+    catatPelanggaran('Mencoba screenshot');
+    return false;
+  }
+}
+
+function cekVisibility() {
+  if (document.hidden && ujianDimulai && !ujianSelesai) {
+    catatPelanggaran('Pindah tab / minimize');
+  }
+}
+
+function cekBlur() {
+  if (ujianDimulai && !ujianSelesai && !document.hidden) {
+    catatPelanggaran('Jendela kehilangan fokus');
+  }
+}
+
+function cekResize() {
+  if (ujianDimulai && !ujianSelesai) {
+    if (window.innerWidth < 600 || window.innerHeight < 400) {
+      catatPelanggaran('Split screen / resize mencurigakan');
+    }
+  }
+}
+
+function cekPrintScreen(e) {
+  if (e.key === 'PrintScreen') {
+    catatPelanggaran('Print Screen terdeteksi');
+  }
+}
+
+function cekFullscreen() {
+  if (!document.fullscreenElement && ujianDimulai && !ujianSelesai) {
+    catatPelanggaran('Keluar dari fullscreen');
+  }
+}
+
+function catatPelanggaran(alasan) {
+  if (ujianSelesai) return;
+  pelanggaran++;
+  console.warn('⚠️ PELANGGARAN #' + pelanggaran + ': ' + alasan);
+  document.getElementById('blackout').classList.remove('hidden');
+  ujianDimulai = false;
+}
+
+function resetUjian() {
+  jawabanSiswa = {};
+  indexSoal = 0;
+  soalAktif = acakArray([...soalAktif]);
+  waktuSisa = 90 * 60;
+  document.getElementById('blackout').classList.add('hidden');
+  ujianDimulai = true;
+  buatGridNomor();
+  tampilkanSoal();
+  mulaiTimer();
+  try { document.documentElement.requestFullscreen(); } catch(e) {}
+  alert('⚠️ Ujian diulang dari awal. Soal telah diacak kembali. Pelanggaran tercatat: ' + pelanggaran + 'x');
+}
+
+// ============ FUNGSI GURU ============
+function loginGuru() {
+  const id = document.getElementById('idGuru').value;
+  if (id === 'AGUNG121002') {
+    sessionStorage.setItem('guruLogin', 'true');
+    sembunyikan('loginGuru');
+    tampilkan('dashboard');
+    muatDashboard();
+  } else {
+    alert('❌ ID Guru salah!');
+  }
+}
+
+function cekStatusGuru() {
+  if (sessionStorage.getItem('guruLogin') === 'true') {
+    const lg = document.getElementById('loginGuru');
+    const db = document.getElementById('dashboard');
+    if (lg) lg.classList.add('hidden');
+    if (db) db.classList.remove('hidden');
+    muatDashboard();
+  }
+}
+
+function logoutGuru() {
+  sessionStorage.removeItem('guruLogin');
+  location.reload();
+}
+
+function showTab(tab, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.remove('hidden');
+  btn.classList.add('active');
+  if (tab === 'hasilSiswa') muatHasil();
+  if (tab === 'kelolaSoal') muatDaftarSoal();
+}
+
+function muatDashboard() {
+  muatHasil();
+  muatDaftarSoal();
+}
+
+function uploadSoal() {
+  const txt = document.getElementById('inputSoal').value.trim();
+  try {
+    const data = JSON.parse(txt);
+    if (!Array.isArray(data)) throw new Error('Bukan array');
+    data.forEach(s => {
+      if (!s.pertanyaan || !s.pilihan || !s.kunci) throw new Error('Format salah');
+    });
+    localStorage.setItem('soalCustom', JSON.stringify(data));
+    alert('✅ ' + data.length + ' soal berhasil diupload!');
+    document.getElementById('inputSoal').value = '';
+  } catch(e) {
+    alert('❌ Format JSON tidak valid: ' + e.message);
+  }
+}
+
+function uploadFile() {
+  const file = document.getElementById('fileSoal').files[0];
+  if (!file) return alert('Pilih file dulu!');
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('inputSoal').value = e.target.result;
+    uploadSoal();
+  };
+  reader.readAsText(file);
+}
+
+function muatHasil() {
+  const hasil = JSON.parse(localStorage.getItem('hasilUjian') || '[]');
+  const tbody = document.querySelector('#tabelHasil tbody');
+  tbody.innerHTML = '';
+  hasil.forEach((h, i) => {
+    tbody.innerHTML += `<tr><td>${i+1}</td><td>${h.nama}</td><td>${h.kelas}</td><td>${h.noUjian}</td><td>${h.benar}/${h.total}</td><td><b>${h.nilai}</b></td><td>${h.waktu}</td></tr>`;
+  });
+  if (hasil.length === 0) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center">Belum ada data</td></tr>';
+}
+
+function muatDaftarSoal() {
+  const soal = JSON.parse(localStorage.getItem('soalCustom') || 'null') || SOAL_DEFAULT;
+  document.getElementById('jumlahSoal').textContent = soal.length;
+  const daftar = document.getElementById('daftarSoal');
+  daftar.innerHTML = soal.map((s, i) => `<div style="padding:10px;border-bottom:1px solid #ddd"><b>${i+1}.</b> ${s.pertanyaan.substring(0,150)}... <small>[Kunci: ${s.kunci}]</small></div>`).join('');
+}
+
+function resetSoalDefault() {
+  if (confirm('Reset ke soal default? Soal custom akan dihapus.')) {
+    localStorage.removeItem('soalCustom');
+    soalAktif = SOAL_DEFAULT;
+    alert('✅ Soal direset ke default');
+    muatDaftarSoal();
+  }
+}
+
+function hapusSemuaHasil() {
+  if (confirm('Hapus SEMUA data hasil siswa?')) {
+    localStorage.removeItem('hasilUjian');
+    muatHasil();
+    alert('✅ Data dihapus');
+  }
+}
+
+function exportCSV() {
+  const hasil = JSON.parse(localStorage.getItem('hasilUjian') || '[]');
+  if (hasil.length === 0) return alert('Tidak ada data');
+  let csv = 'No,Nama,Kelas,No Ujian,Benar,Total,Nilai,Waktu,Pelanggaran\n';
+  hasil.forEach((h, i) => {
+    csv += `${i+1},"${h.nama}","${h.kelas}","${h.noUjian}",${h.benar},${h.total},${h.nilai},"${h.waktu}",${h.pelanggaran}\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'hasil-ujian-ski.csv';
+  a.click();
+}
+</script>
+</body>
+</html>
